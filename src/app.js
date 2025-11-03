@@ -15,10 +15,18 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-app.use(errorHandler);
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
+
+// Health check route (✅ IMPORTANT for Render)
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "Health Care API is healthy!",
+    timestamp: new Date().toISOString()
+  });
+});
 
 // imports api
 import adminApi from "./routes/admin/admin.routes.js";
@@ -53,7 +61,15 @@ app.use("/api/v1/course-registrations", courseRegistrationApi);
 
 // Home route
 app.get("/", (req, res) => {
-  res.send("Welcome To HealthCare API!");
+  res.json({ 
+    message: "Welcome To HealthCare API!",
+    version: "1.0.0",
+    status: "active",
+    timestamp: new Date().toISOString()
+  });
 });
+
+// ✅ Error handler should be last
+app.use(errorHandler);
 
 export default app;
