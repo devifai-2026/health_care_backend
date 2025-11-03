@@ -64,6 +64,7 @@ userSchema.methods.generateOTP = function () {
   return otp;
 };
 
-const User = mongoose.model("User", userSchema);
+// Check if model already exists, otherwise create new
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;

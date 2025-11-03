@@ -1,8 +1,8 @@
 
-import User from "../models/User/user.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { verifyAccessToken } from "../utils/jwt.js";
+import User from './../models/user/user.model.js';
 
 export const authenticateUser = asyncHandler(async (req, res, next) => {
   // Get token from header
