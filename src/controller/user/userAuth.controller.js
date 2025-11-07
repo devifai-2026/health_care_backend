@@ -8,7 +8,7 @@ import {
 } from "../../utils/jwt.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
 import { sendOtpEmail } from "../../services/email.service.js";
-import User from "../../models/User/user.model.js";
+import User from "../../models/user/user.model.js";
 
 // Register User with OTP
 export const registerUser = asyncHandler(async (req, res) => {
