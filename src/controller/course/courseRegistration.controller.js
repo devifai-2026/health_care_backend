@@ -4,7 +4,7 @@ import Course from "../../models/course/course.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
-import User from "../../models/User/user.model.js";
+import User from "../../models/user/user.model.js";
 
 // Create Course Registration (User)
 export const createCourseRegistration = asyncHandler(async (req, res) => {
