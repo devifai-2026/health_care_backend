@@ -1,12 +1,11 @@
-// healthCare.controller.js
-import HealthcareCenter from "../../models/health/healthCare.model.js";
-import HealthCategory from "../../models/health/healthCategory.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
+import BloodBankCategory from "../../models/bloodBank/bloodBankCategory.model.js"
+import BloodBank from "../../models/bloodBank/bloodBank.model.js"
 
-// Create Healthcare Center
-export const createHealthcareCenter = asyncHandler(async (req, res) => {
+// Create Blood Bank
+export const createBloodBank = asyncHandler(async (req, res) => {
   try {
     const {
       name,
@@ -17,11 +16,9 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       email,
       specialties,
       isActive,
-      HealthcareCoverImg,
-      HealthcareImg
+      bloodBankCoverImg,
+      bloodBankImg
     } = req.body;
-
-    console.log(req.body);
 
     // Validation
     if (
@@ -31,8 +28,8 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
-      ! HealthcareCoverImg,
-      !HealthcareImg
+      !bloodBankCoverImg,
+      !bloodBankImg
     ) {
       return res
         .status(400)
@@ -40,29 +37,29 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
     }
 
     // Check if category exists
-    const categoryExists = await HealthCategory.findById(category);
+    const categoryExists = await BloodBankCategory.findById(category);
     if (!categoryExists) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Health category not found"));
+        .json(new ApiResponse(404, null, "Blood Bank category not found"));
     }
 
-    // Check if healthcare center with email already exists
-    const existingHealthcare = await HealthcareCenter.findOne({ email });
-    if (existingHealthcare) {
+    // Check if Blood Bank with email already exists
+    const existingBloodBank = await BloodBank.findOne({ email });
+    if (existingBloodBank) {
       return res
         .status(409)
         .json(
           new ApiResponse(
             409,
             null,
-            "Healthcare center with this email already exists"
+            "Blood Bank with this email already exists"
           )
         );
     }
 
-    // Create new healthcare center
-    const healthcare = new HealthcareCenter({
+    // Create new blood bank
+    const bloodBank = new BloodBank({
       name,
       category,
       address,
@@ -71,20 +68,20 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
       isActive: isActive || false,
-      HealthcareCoverImg,
-      HealthcareImg : Array.isArray(HealthcareImg) ? HealthcareImg : [HealthcareImg],
+      bloodBankCoverImg,
+      bloodBankImg : Array.isArray(bloodBankImg) ? bloodBankImg : [bloodBankImg],
     });
 
-    await healthcare.save();
-    await healthcare.populate("category", "name description");
+    await bloodBank.save();
+    await bloodBank.populate("category", "name description");
 
     return res
       .status(201)
       .json(
         new ApiResponse(
           201,
-          healthcare,
-          "Healthcare center created successfully"
+          bloodBank,
+          "Medicine Shop created successfully"
         )
       );
   } catch (error) {
@@ -93,12 +90,11 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
   }
 });
 
-
-// Get All Healthcare Centers
-export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
+// Get All Blood Bank
+export const getAllBloodBank = asyncHandler(async (req, res) => {
   try {
     // Then try with population
-    const healthcareCenters = await HealthcareCenter.find()
+    const bloodBank = await BloodBank.find()
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -107,8 +103,8 @@ export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers retrieved successfully"
+          bloodBank,
+          "Blood Bank retrieved successfully"
         )
       );
   } catch (error) {
@@ -116,10 +112,10 @@ export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Active Healthcare Centers
-export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
+// Get Active Blood Bank
+export const getActiveBloodBank = asyncHandler(async (req, res) => {
   try {
-    const healthcareCenters = await HealthcareCenter.find({ isActive: true })
+    const bloodBanks = await BloodBank.find({ isActive: true })
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -128,8 +124,8 @@ export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Active healthcare centers retrieved successfully"
+          bloodBanks,
+          "Active Blood Bank retrieved successfully"
         )
       );
   } catch (error) {
@@ -137,20 +133,20 @@ export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Center by ID
-export const getHealthcareCenterById = asyncHandler(async (req, res) => {
+// Get Blood Bank by ID
+export const getBloodBankById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    const healthcare = await HealthcareCenter.findById(id).populate(
+    const bloodBank = await BloodBank.findById(id).populate(
       "category",
       "name description"
     );
 
-    if (!healthcare) {
+    if (!bloodBank) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, "Blood Bank not found"));
     }
 
     return res
@@ -158,8 +154,8 @@ export const getHealthcareCenterById = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcare,
-          "Healthcare center retrieved successfully"
+          bloodBank,
+          "Blood Bank retrieved successfully"
         )
       );
   } catch (error) {
@@ -167,12 +163,12 @@ export const getHealthcareCenterById = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Centers by Category
-export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
+// Get Blood Bank by Category
+export const getBloodBanksByCategory = asyncHandler(async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    const healthcareCenters = await HealthcareCenter.find({
+    const bloodBanks = await BloodBank.find({
       category: categoryId,
       isActive: true,
     })
@@ -184,8 +180,8 @@ export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers by category retrieved successfully"
+          bloodBanks,
+          "Blood banks by category retrieved successfully"
         )
       );
   } catch (error) {
@@ -193,68 +189,62 @@ export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Update Healthcare Center
-export const updateHealthcareCenter = asyncHandler(async (req, res) => {
+// Update Blood Bank
+export const updateBloodBank = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-
-    const healthcare = await HealthcareCenter.findById(id);
-    if (!healthcare) {
+    const bloodBank = await BloodBank.findById(id);
+    if (!bloodBank) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, "Blood Bank center not found"));
     }
-
     // Check if category exists (if being updated)
     if (updateData.category) {
-      const categoryExists = await HealthCategory.findById(updateData.category);
+      const categoryExists = await BloodBankCategory.findById(updateData.category);
       if (!categoryExists) {
         return res
           .status(404)
-          .json(new ApiResponse(404, null, "Health category not found"));
+          .json(new ApiResponse(404, null, "Blood Bank category not found"));
       }
     }
-
-    // Check if email already exists (excluding current healthcare center)
-    if (updateData.email && updateData.email !== healthcare.email) {
-      const existingHealthcare = await HealthcareCenter.findOne({
+    // Check if email already exists (excluding current Blood Bank)
+    if (updateData.email && updateData.email !== bloodBank.email) {
+      const existingBloodBank = await BloodBank.findOne({
         email: updateData.email,
       });
-      if (existingHealthcare) {
+      if (existingBloodBank) {
         return res
           .status(409)
           .json(
             new ApiResponse(
               409,
               null,
-              "Healthcare center with this email already exists"
+              "Blood Bank with this email already exists"
             )
           );
       }
     }
-
-    // Update healthcare center
+    // Update Blood Bank
     Object.keys(updateData).forEach((key) => {
       if (updateData[key] !== undefined) {
         if (key === "specialties" && typeof updateData[key] === "string") {
-          healthcare[key] = [updateData[key]];
+          bloodBank[key] = [updateData[key]];
         } else {
-          healthcare[key] = updateData[key];
+          bloodBank[key] = updateData[key];
         }
       }
     });
-
-    await healthcare.save();
-    await healthcare.populate("category", "name description");
-
+    await bloodBank.save();
+    await bloodBank.populate("category", "name description");
     return res
       .status(200)
       .json(
         new ApiResponse(
           200,
-          healthcare,
-          "Healthcare center updated successfully"
+          bloodBank,
+          "Blood Bank center updated successfully"
         )
       );
   } catch (error) {
@@ -262,30 +252,30 @@ export const updateHealthcareCenter = asyncHandler(async (req, res) => {
   }
 });
 
-// Delete Healthcare Center
-export const deleteHealthcareCenter = asyncHandler(async (req, res) => {
+// Delete Blood Bank
+export const deleteBloodBankCenter = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    const healthcare = await HealthcareCenter.findByIdAndDelete(id);
-    if (!healthcare) {
+    const bloodBank = await BloodBank.findByIdAndDelete(id);
+    if (!bloodBank) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, "Blood Bank not found"));
     }
 
     return res
       .status(200)
       .json(
-        new ApiResponse(200, null, "Healthcare center deleted successfully")
+        new ApiResponse(200, null, "Blood Bank deleted successfully")
       );
   } catch (error) {
     return handleMongoErrors(error, res);
   }
 });
 
-// Search Healthcare Centers
-export const searchHealthcareCenters = asyncHandler(async (req, res) => {
+// Search Blood Bank
+export const searchBloodBank = asyncHandler(async (req, res) => {
   try {
     const { query, category, pincode } = req.query;
 
@@ -307,7 +297,7 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
       searchCriteria.pincode = parseInt(pincode);
     }
 
-    const healthcareCenters = await HealthcareCenter.find(searchCriteria)
+    const bloodBanks = await BloodBank.find(searchCriteria)
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -316,8 +306,8 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers search results"
+          bloodBanks,
+          "Blood Bank search results"
         )
       );
   } catch (error) {
@@ -325,12 +315,12 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Centers by Pincode
-export const getHealthcareCentersByPincode = asyncHandler(async (req, res) => {
+// Get Blood Bank by Pincode
+export const getBloodBankByPincode = asyncHandler(async (req, res) => {
   try {
     const { pincode } = req.params;
 
-    const healthcareCenters = await HealthcareCenter.find({
+    const bloodBanks = await BloodBank.find({
       pincode: parseInt(pincode),
       isActive: true,
     })
@@ -342,8 +332,8 @@ export const getHealthcareCentersByPincode = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers by pincode retrieved successfully"
+          bloodBanks,
+          "Blood Bank by pincode retrieved successfully"
         )
       );
   } catch (error) {

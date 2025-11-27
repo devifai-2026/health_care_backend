@@ -1,12 +1,11 @@
-// healthCare.controller.js
-import HealthcareCenter from "../../models/health/healthCare.model.js";
-import HealthCategory from "../../models/health/healthCategory.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
+import ElderCareOrgCategory from "../../models/elderCareOrg/elderCareOrgCategory.model.js"
+import ElderCareOrg from "../../models/elderCareOrg/elderCareOrg.model.js";
 
-// Create Healthcare Center
-export const createHealthcareCenter = asyncHandler(async (req, res) => {
+// Create Elder Care Org
+export const createElderCareOrg = asyncHandler(async (req, res) => {
   try {
     const {
       name,
@@ -17,12 +16,9 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       email,
       specialties,
       isActive,
-      HealthcareCoverImg,
-      HealthcareImg
+      elderCareOrgCoverImg,
+      elderCareOrgImg
     } = req.body;
-
-    console.log(req.body);
-
     // Validation
     if (
       !name ||
@@ -31,8 +27,8 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
-      ! HealthcareCoverImg,
-      !HealthcareImg
+      !elderCareOrgCoverImg,
+      !elderCareOrgImg
     ) {
       return res
         .status(400)
@@ -40,29 +36,29 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
     }
 
     // Check if category exists
-    const categoryExists = await HealthCategory.findById(category);
+    const categoryExists = await ElderCareOrgCategory.findById(category);
     if (!categoryExists) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Health category not found"));
+        .json(new ApiResponse(404, null, "Elder Care Org not found"));
     }
 
-    // Check if healthcare center with email already exists
-    const existingHealthcare = await HealthcareCenter.findOne({ email });
-    if (existingHealthcare) {
+    // Check if Elder Care Org with email already exists
+    const existingElderCareOrg = await ElderCareOrg.findOne({ email });
+    if (existingElderCareOrg) {
       return res
         .status(409)
         .json(
           new ApiResponse(
             409,
             null,
-            "Healthcare center with this email already exists"
+            "Elder Care Org with this email already exists"
           )
         );
     }
 
-    // Create new healthcare center
-    const healthcare = new HealthcareCenter({
+    // Create new Elder Care Org
+    const elderCareOrg = new ElderCareOrg({
       name,
       category,
       address,
@@ -71,20 +67,20 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
       isActive: isActive || false,
-      HealthcareCoverImg,
-      HealthcareImg : Array.isArray(HealthcareImg) ? HealthcareImg : [HealthcareImg],
+      elderCareOrgCoverImg,
+      elderCareOrgImg : Array.isArray(elderCareOrgImg) ? elderCareOrgImg : [elderCareOrgImg],
     });
 
-    await healthcare.save();
-    await healthcare.populate("category", "name description");
+    await elderCareOrg.save();
+    await elderCareOrg.populate("category", "name description");
 
     return res
       .status(201)
       .json(
         new ApiResponse(
           201,
-          healthcare,
-          "Healthcare center created successfully"
+          elderCareOrg,
+          "Elder Care Org created successfully"
         )
       );
   } catch (error) {
@@ -93,12 +89,11 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
   }
 });
 
-
-// Get All Healthcare Centers
-export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
+// Get All Elder Care Org
+export const getAllElderCareOrg = asyncHandler(async (req, res) => {
   try {
     // Then try with population
-    const healthcareCenters = await HealthcareCenter.find()
+    const elderCareOrg = await ElderCareOrg.find()
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -107,8 +102,8 @@ export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers retrieved successfully"
+          elderCareOrg,
+          "Elder Care Org retrieved successfully"
         )
       );
   } catch (error) {
@@ -116,10 +111,10 @@ export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Active Healthcare Centers
-export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
+// Get Active Elder Care Org
+export const getActiveElderCareOrg = asyncHandler(async (req, res) => {
   try {
-    const healthcareCenters = await HealthcareCenter.find({ isActive: true })
+    const elderCareOrgs = await ElderCareOrg.find({ isActive: true })
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -128,8 +123,8 @@ export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Active healthcare centers retrieved successfully"
+          elderCareOrgs,
+          "Active Elder Care Org retrieved successfully"
         )
       );
   } catch (error) {
@@ -137,20 +132,20 @@ export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Center by ID
-export const getHealthcareCenterById = asyncHandler(async (req, res) => {
+// Get Elder Care Org by ID
+export const getElderCareOrgById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    const healthcare = await HealthcareCenter.findById(id).populate(
+    const elderCareOrg = await ElderCareOrg.findById(id).populate(
       "category",
       "name description"
     );
 
-    if (!healthcare) {
+    if (!elderCareOrg) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, "Elder Care Org not found"));
     }
 
     return res
@@ -158,8 +153,8 @@ export const getHealthcareCenterById = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcare,
-          "Healthcare center retrieved successfully"
+          elderCareOrg,
+          "Elder Care Org retrieved successfully"
         )
       );
   } catch (error) {
@@ -167,12 +162,12 @@ export const getHealthcareCenterById = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Centers by Category
-export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
+// Get Elder Care Org by Category
+export const getElderCareOrgByCategory = asyncHandler(async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    const healthcareCenters = await HealthcareCenter.find({
+    const elderCareOrgs = await ElderCareOrg.find({
       category: categoryId,
       isActive: true,
     })
@@ -184,8 +179,8 @@ export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers by category retrieved successfully"
+          elderCareOrgs,
+          "Elder Care Org by category retrieved successfully"
         )
       );
   } catch (error) {
@@ -193,68 +188,67 @@ export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Update Healthcare Center
-export const updateHealthcareCenter = asyncHandler(async (req, res) => {
+// Update  Elder Care Org
+export const updateElderCareOrg = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-
-    const healthcare = await HealthcareCenter.findById(id);
-    if (!healthcare) {
+    const elderCareOrg = await ElderCareOrg.findById(id);
+    if (!elderCareOrg) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, " Elder Care Org center not found"));
     }
 
     // Check if category exists (if being updated)
     if (updateData.category) {
-      const categoryExists = await HealthCategory.findById(updateData.category);
+      const categoryExists = await ElderCareOrgCategory.findById(updateData.category);
       if (!categoryExists) {
         return res
           .status(404)
-          .json(new ApiResponse(404, null, "Health category not found"));
+          .json(new ApiResponse(404, null, " Elder Care Org category not found"));
       }
     }
 
-    // Check if email already exists (excluding current healthcare center)
-    if (updateData.email && updateData.email !== healthcare.email) {
-      const existingHealthcare = await HealthcareCenter.findOne({
+    // Check if email already exists (excluding current  Elder Care Org)
+    if (updateData.email && updateData.email !== elderCareOrg.email) {
+      const existingelderCareOrg = await ElderCareOrg.findOne({
         email: updateData.email,
       });
-      if (existingHealthcare) {
+      if (existingelderCareOrg) {
         return res
           .status(409)
           .json(
             new ApiResponse(
               409,
               null,
-              "Healthcare center with this email already exists"
+              " Elder Care Org with this email already exists"
             )
           );
       }
     }
 
-    // Update healthcare center
+    // Update  Elder Care Org
     Object.keys(updateData).forEach((key) => {
       if (updateData[key] !== undefined) {
         if (key === "specialties" && typeof updateData[key] === "string") {
-          healthcare[key] = [updateData[key]];
+          elderCareOrg[key] = [updateData[key]];
         } else {
-          healthcare[key] = updateData[key];
+          elderCareOrg[key] = updateData[key];
         }
       }
     });
 
-    await healthcare.save();
-    await healthcare.populate("category", "name description");
+    await elderCareOrg.save();
+    await elderCareOrg.populate("category", "name description");
 
     return res
       .status(200)
       .json(
         new ApiResponse(
           200,
-          healthcare,
-          "Healthcare center updated successfully"
+          elderCareOrg,
+          " Elder Care Org center updated successfully"
         )
       );
   } catch (error) {
@@ -262,30 +256,30 @@ export const updateHealthcareCenter = asyncHandler(async (req, res) => {
   }
 });
 
-// Delete Healthcare Center
-export const deleteHealthcareCenter = asyncHandler(async (req, res) => {
+// Delete Elder Care Org
+export const deleteElderCareOrg = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    const healthcare = await HealthcareCenter.findByIdAndDelete(id);
-    if (!healthcare) {
+    const elderCareOrg = await ElderCareOrg.findByIdAndDelete(id);
+    if (!elderCareOrg) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, "Elder Care Org not found"));
     }
 
     return res
       .status(200)
       .json(
-        new ApiResponse(200, null, "Healthcare center deleted successfully")
+        new ApiResponse(200, null, "Elder Care Org deleted successfully")
       );
   } catch (error) {
     return handleMongoErrors(error, res);
   }
 });
 
-// Search Healthcare Centers
-export const searchHealthcareCenters = asyncHandler(async (req, res) => {
+// Search Elder Care Org
+export const searchElderCareOrg = asyncHandler(async (req, res) => {
   try {
     const { query, category, pincode } = req.query;
 
@@ -307,7 +301,7 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
       searchCriteria.pincode = parseInt(pincode);
     }
 
-    const healthcareCenters = await HealthcareCenter.find(searchCriteria)
+    const elderCareOrgs = await ElderCareOrg.find(searchCriteria)
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -316,8 +310,8 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers search results"
+          elderCareOrgs,
+          "Elder Care Org search results"
         )
       );
   } catch (error) {
@@ -325,12 +319,12 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Centers by Pincode
-export const getHealthcareCentersByPincode = asyncHandler(async (req, res) => {
+// Get Elder Care Org by Pincode
+export const getElderCareOrgByPincode = asyncHandler(async (req, res) => {
   try {
     const { pincode } = req.params;
 
-    const healthcareCenters = await HealthcareCenter.find({
+    const medicineShops = await ElderCareOrg.find({
       pincode: parseInt(pincode),
       isActive: true,
     })
@@ -342,8 +336,8 @@ export const getHealthcareCentersByPincode = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers by pincode retrieved successfully"
+          medicineShops,
+          "Elder Care Org by pincode retrieved successfully"
         )
       );
   } catch (error) {

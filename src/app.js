@@ -43,6 +43,12 @@ import blogApi from "./routes/blog/blog.routes.js";
 import courseApi from "./routes/course/course.routes.js";
 import courseCategoryApi from "./routes/course/courseCategory.routes.js";
 import courseRegistrationApi from "./routes/course/courseRegistration.routes.js";
+import medicineShopCategory from "./routes/medicineShop/medicineShopCategory.route.js";
+import medicineShop from "./routes/medicineShop/medicineShop.route.js";
+import bloodBankCategory from "./routes/bloodBank/bloodBankCategory.route.js";
+import bloodBank from "./routes/bloodBank/bloodBank.route.js";
+import elderCareOrgCategory from "./routes/elderCareOrg/elderCareOrgCategory.route.js";
+import elderCareOrg from "./routes/elderCareOrg/elderCareOrg.route.js";
 
 app.use("/api/v1/admin", adminApi);
 app.use("/api/v1/user", userApi);
@@ -53,11 +59,17 @@ app.use("/api/v1/doctors", doctorApi);
 app.use("/api/v1/blogs", blogApi);
 app.use("/api/v1/jobs", jobApi);
 app.use("/api/v1/job-categories", jobCategoryApi);
-app.use("/api/v1/job-applications", jobApplicationApi);
-app.use("/api/v1/bookings", bookingApi);
+app.use("/api/v1/job-applications", jobApplicationApi); // not done
+app.use("/api/v1/bookings", bookingApi); // not done
 app.use("/api/v1/courses", courseApi);
 app.use("/api/v1/course-categories", courseCategoryApi);
-app.use("/api/v1/course-registrations", courseRegistrationApi);
+app.use("/api/v1/course-registrations", courseRegistrationApi); // not done
+app.use("/api/v1/medicineshop-categories", medicineShopCategory)
+app.use("/api/v1/medicine-shops", medicineShop);
+app.use("/api/v1/bloodBank-categories", bloodBankCategory);
+app.use("/api/v1/blood-banks", bloodBank);
+app.use("/api/v1/elderCareOrg-categories", elderCareOrgCategory);
+app.use("/api/v1/elderCare-org", elderCareOrg);
 
 // Home route
 app.get("/", (req, res) => {

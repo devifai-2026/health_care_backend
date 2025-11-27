@@ -1,12 +1,11 @@
-// healthCare.controller.js
-import HealthcareCenter from "../../models/health/healthCare.model.js";
-import HealthCategory from "../../models/health/healthCategory.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
+import MedicineShopCategory from "../../models/medicineShop/medicineShopCategort.model.js"
+import MedicineShop from "../../models/medicineShop/medicineShop.model.js"
 
-// Create Healthcare Center
-export const createHealthcareCenter = asyncHandler(async (req, res) => {
+// Create Medicine Shop
+export const createMedineShop = asyncHandler(async (req, res) => {
   try {
     const {
       name,
@@ -17,11 +16,9 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       email,
       specialties,
       isActive,
-      HealthcareCoverImg,
-      HealthcareImg
+      medicineShopCoverImg,
+      medicineShopImg
     } = req.body;
-
-    console.log(req.body);
 
     // Validation
     if (
@@ -31,8 +28,8 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
-      ! HealthcareCoverImg,
-      !HealthcareImg
+      !medicineShopCoverImg,
+      !medicineShopImg
     ) {
       return res
         .status(400)
@@ -40,29 +37,29 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
     }
 
     // Check if category exists
-    const categoryExists = await HealthCategory.findById(category);
+    const categoryExists = await MedicineShopCategory.findById(category);
     if (!categoryExists) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Health category not found"));
+        .json(new ApiResponse(404, null, "Medicine Shop category not found"));
     }
 
-    // Check if healthcare center with email already exists
-    const existingHealthcare = await HealthcareCenter.findOne({ email });
-    if (existingHealthcare) {
+    // Check if Medicine Shop with email already exists
+    const existingMedicineShop = await MedicineShop.findOne({ email });
+    if (existingMedicineShop) {
       return res
         .status(409)
         .json(
           new ApiResponse(
             409,
             null,
-            "Healthcare center with this email already exists"
+            "Medicine Shop with this email already exists"
           )
         );
     }
 
-    // Create new healthcare center
-    const healthcare = new HealthcareCenter({
+    // Create new Medicine Shop
+    const medicineShop = new MedicineShop({
       name,
       category,
       address,
@@ -71,20 +68,20 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
       isActive: isActive || false,
-      HealthcareCoverImg,
-      HealthcareImg : Array.isArray(HealthcareImg) ? HealthcareImg : [HealthcareImg],
+      medicineShopCoverImg,
+      medicineShopImg : Array.isArray(medicineShopImg) ? medicineShopImg : [medicineShopImg],
     });
 
-    await healthcare.save();
-    await healthcare.populate("category", "name description");
+    await medicineShop.save();
+    await medicineShop.populate("category", "name description");
 
     return res
       .status(201)
       .json(
         new ApiResponse(
           201,
-          healthcare,
-          "Healthcare center created successfully"
+          medicineShop,
+          "Medicine Shop created successfully"
         )
       );
   } catch (error) {
@@ -93,12 +90,11 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
   }
 });
 
-
-// Get All Healthcare Centers
-export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
+// Get All Medicine Shop
+export const getAllMedicineShop = asyncHandler(async (req, res) => {
   try {
     // Then try with population
-    const healthcareCenters = await HealthcareCenter.find()
+    const medicineShop = await MedicineShop.find()
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -107,8 +103,8 @@ export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers retrieved successfully"
+          medicineShop,
+          "Medicine Shop retrieved successfully"
         )
       );
   } catch (error) {
@@ -116,10 +112,10 @@ export const getAllHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Active Healthcare Centers
-export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
+// Get Active Medicine Shop
+export const getActiveMedicineShop = asyncHandler(async (req, res) => {
   try {
-    const healthcareCenters = await HealthcareCenter.find({ isActive: true })
+    const medicineShops = await MedicineShop.find({ isActive: true })
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -128,8 +124,8 @@ export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Active healthcare centers retrieved successfully"
+          medicineShops,
+          "Active Medicine Shop retrieved successfully"
         )
       );
   } catch (error) {
@@ -137,20 +133,20 @@ export const getActiveHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Center by ID
-export const getHealthcareCenterById = asyncHandler(async (req, res) => {
+// Get Medicine Shop by ID
+export const getMedicineShopById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    const healthcare = await HealthcareCenter.findById(id).populate(
+    const medicineShop = await MedicineShop.findById(id).populate(
       "category",
       "name description"
     );
 
-    if (!healthcare) {
+    if (!medicineShop) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, "Medicine Shop not found"));
     }
 
     return res
@@ -158,8 +154,8 @@ export const getHealthcareCenterById = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcare,
-          "Healthcare center retrieved successfully"
+          medicineShop,
+          "Medicine Shop retrieved successfully"
         )
       );
   } catch (error) {
@@ -167,12 +163,12 @@ export const getHealthcareCenterById = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Centers by Category
-export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
+// Get Medicine Shop by Category
+export const getMedicineShopsByCategory = asyncHandler(async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    const healthcareCenters = await HealthcareCenter.find({
+    const medicineShops = await MedicineShop.find({
       category: categoryId,
       isActive: true,
     })
@@ -184,8 +180,8 @@ export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers by category retrieved successfully"
+          medicineShops,
+          "Medicine Shop by category retrieved successfully"
         )
       );
   } catch (error) {
@@ -193,68 +189,69 @@ export const getHealthcareCentersByCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Update Healthcare Center
-export const updateHealthcareCenter = asyncHandler(async (req, res) => {
+// Update Medicine Shop
+export const updateMedicineShop = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
 
-    const healthcare = await HealthcareCenter.findById(id);
-    if (!healthcare) {
+
+    const medicineShop = await MedicineShop.findById(id);
+    if (!medicineShop) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, "Medicine Shop center not found"));
     }
 
     // Check if category exists (if being updated)
     if (updateData.category) {
-      const categoryExists = await HealthCategory.findById(updateData.category);
+      const categoryExists = await MedicineShopCategory.findById(updateData.category);
       if (!categoryExists) {
         return res
           .status(404)
-          .json(new ApiResponse(404, null, "Health category not found"));
+          .json(new ApiResponse(404, null, "Medicine Shop category not found"));
       }
     }
 
-    // Check if email already exists (excluding current healthcare center)
-    if (updateData.email && updateData.email !== healthcare.email) {
-      const existingHealthcare = await HealthcareCenter.findOne({
+    // Check if email already exists (excluding current medicine shop)
+    if (updateData.email && updateData.email !== medicineShop.email) {
+      const existingMedicineShop = await MedicineShop.findOne({
         email: updateData.email,
       });
-      if (existingHealthcare) {
+      if (existingMedicineShop) {
         return res
           .status(409)
           .json(
             new ApiResponse(
               409,
               null,
-              "Healthcare center with this email already exists"
+              "Medicine Shop with this email already exists"
             )
           );
       }
     }
 
-    // Update healthcare center
+    // Update Medicine Shop
     Object.keys(updateData).forEach((key) => {
       if (updateData[key] !== undefined) {
         if (key === "specialties" && typeof updateData[key] === "string") {
-          healthcare[key] = [updateData[key]];
+          medicineShop[key] = [updateData[key]];
         } else {
-          healthcare[key] = updateData[key];
+          medicineShop[key] = updateData[key];
         }
       }
     });
 
-    await healthcare.save();
-    await healthcare.populate("category", "name description");
+    await medicineShop.save();
+    await medicineShop.populate("category", "name description");
 
     return res
       .status(200)
       .json(
         new ApiResponse(
           200,
-          healthcare,
-          "Healthcare center updated successfully"
+          medicineShop,
+          "Medicine Shop center updated successfully"
         )
       );
   } catch (error) {
@@ -262,30 +259,30 @@ export const updateHealthcareCenter = asyncHandler(async (req, res) => {
   }
 });
 
-// Delete Healthcare Center
-export const deleteHealthcareCenter = asyncHandler(async (req, res) => {
+// Delete Medicine Shop
+export const deleteMedicineShopCenter = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    const healthcare = await HealthcareCenter.findByIdAndDelete(id);
-    if (!healthcare) {
+    const medicineShop = await MedicineShop.findByIdAndDelete(id);
+    if (!medicineShop) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Healthcare center not found"));
+        .json(new ApiResponse(404, null, "Medicine Shop not found"));
     }
 
     return res
       .status(200)
       .json(
-        new ApiResponse(200, null, "Healthcare center deleted successfully")
+        new ApiResponse(200, null, "Medicine Shop deleted successfully")
       );
   } catch (error) {
     return handleMongoErrors(error, res);
   }
 });
 
-// Search Healthcare Centers
-export const searchHealthcareCenters = asyncHandler(async (req, res) => {
+// Search Medicine Shop
+export const searchMedicineShop = asyncHandler(async (req, res) => {
   try {
     const { query, category, pincode } = req.query;
 
@@ -307,7 +304,7 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
       searchCriteria.pincode = parseInt(pincode);
     }
 
-    const healthcareCenters = await HealthcareCenter.find(searchCriteria)
+    const medicineShops = await MedicineShop.find(searchCriteria)
       .populate("category", "name description")
       .sort({ name: 1 });
 
@@ -316,8 +313,8 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers search results"
+          medicineShops,
+          "Medicine Shops search results"
         )
       );
   } catch (error) {
@@ -325,12 +322,12 @@ export const searchHealthcareCenters = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Healthcare Centers by Pincode
-export const getHealthcareCentersByPincode = asyncHandler(async (req, res) => {
+// Get Medicine Shops by Pincode
+export const getMedicineShopByPincode = asyncHandler(async (req, res) => {
   try {
     const { pincode } = req.params;
 
-    const healthcareCenters = await HealthcareCenter.find({
+    const medicineShops = await MedicineShop.find({
       pincode: parseInt(pincode),
       isActive: true,
     })
@@ -342,8 +339,8 @@ export const getHealthcareCentersByPincode = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          healthcareCenters,
-          "Healthcare centers by pincode retrieved successfully"
+          medicineShops,
+          "Medicine by pincode retrieved successfully"
         )
       );
   } catch (error) {

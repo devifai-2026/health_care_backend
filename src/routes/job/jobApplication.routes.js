@@ -8,12 +8,12 @@ import {
 } from "../../controller/job/jobApplication.controller.js";
 
 import { authenticateAdmin } from "../../middleware/admin.auth.middleware.js";
-import { authenticateUser } from "../../middleware/auth.middleware.js";
+// import { authenticateUser } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
 // User only route - apply for job
-router.post("/apply", authenticateUser, applyForJob);
+router.post("/apply", applyForJob);
 
 // Admin only routes - all other operations
 router.get("/job/:jobId", authenticateAdmin, getJobApplications);

@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
-const healthCareSchema = new mongoose.Schema({
+const elderCareOrgSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "HealthCategory",
+    ref: "ElderCareOrgCategory",
     required: true,
   },
   address: {
@@ -36,12 +36,12 @@ const healthCareSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  HealthcareCoverImg: {
+  elderCareOrgCoverImg: {
     type: String,  // Cloudinary URL of the main image
     required: false,
     default: "",
   },
-  HealthcareImg: [
+  elderCareOrgImg: [
     {
       type: String, // Cloudinary URL of the sub image
     },
@@ -50,6 +50,6 @@ const healthCareSchema = new mongoose.Schema({
 
 
 
-const HealthcareCenter = mongoose.model("healthCare", healthCareSchema);
+const ElderCareOrg = mongoose.model("ElderCareOrg", elderCareOrgSchema);
 
-export default HealthcareCenter;
+export default ElderCareOrg;
