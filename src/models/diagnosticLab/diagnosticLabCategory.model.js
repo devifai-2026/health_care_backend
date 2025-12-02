@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const bloodBankCategorySchema = new mongoose.Schema({
+const diagnosticLabCategorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -13,7 +13,7 @@ const bloodBankCategorySchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  createdAt: {
+   createdAt: {
     type: Date,
     default: Date.now,
   },
@@ -23,6 +23,6 @@ const bloodBankCategorySchema = new mongoose.Schema({
   },
 });
 
-const BloodBankCategory = mongoose.model("BloodBankCategory", bloodBankCategorySchema);
+const DiagnosticLabCategory = mongoose.model("DiagnosticLabCategory", diagnosticLabCategorySchema);
 
-export default BloodBankCategory;
+export default DiagnosticLabCategory;

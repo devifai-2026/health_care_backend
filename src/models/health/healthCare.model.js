@@ -46,6 +46,14 @@ const healthCareSchema = new mongoose.Schema({
       type: String, // Cloudinary URL of the sub image
     },
   ],
+   createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 

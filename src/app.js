@@ -49,6 +49,8 @@ import bloodBankCategory from "./routes/bloodBank/bloodBankCategory.route.js";
 import bloodBank from "./routes/bloodBank/bloodBank.route.js";
 import elderCareOrgCategory from "./routes/elderCareOrg/elderCareOrgCategory.route.js";
 import elderCareOrg from "./routes/elderCareOrg/elderCareOrg.route.js";
+import diagnosticLabCategory from "./routes/diagnosticLab/diagnosticLabCategory.route.js";
+import diagnosticLab from "./routes/diagnosticLab/diagnosticLab.route.js";
 
 app.use("/api/v1/admin", adminApi);
 app.use("/api/v1/user", userApi);
@@ -70,6 +72,8 @@ app.use("/api/v1/bloodBank-categories", bloodBankCategory);
 app.use("/api/v1/blood-banks", bloodBank);
 app.use("/api/v1/elderCareOrg-categories", elderCareOrgCategory);
 app.use("/api/v1/elderCare-org", elderCareOrg);
+app.use("/api/v1/diagnosticLab-categories", diagnosticLabCategory);
+app.use("/api/v1/diagnostic-lab", diagnosticLab);
 
 // Home route
 app.get("/", (req, res) => {
