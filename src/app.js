@@ -51,6 +51,12 @@ import elderCareOrgCategory from "./routes/elderCareOrg/elderCareOrgCategory.rou
 import elderCareOrg from "./routes/elderCareOrg/elderCareOrg.route.js";
 import diagnosticLabCategory from "./routes/diagnosticLab/diagnosticLabCategory.route.js";
 import diagnosticLab from "./routes/diagnosticLab/diagnosticLab.route.js";
+import ambulanceCategory from "./routes/ambulance/ambulanceCategory.route.js";
+import ambulance from "./routes/ambulance/ambulance.route.js";
+import AyaCategory from "./routes/aya/ayaCategory.route.js";
+import AyaService from "./routes/aya/ayaService.route.js";
+import PhysiotherapistCategory from "./routes/physiotherapist/physiotherapistCategory.route.js";
+import Physiotherapist from "./routes/physiotherapist/physiotherapist.route.js";
 
 app.use("/api/v1/admin", adminApi);
 app.use("/api/v1/user", userApi);
@@ -74,6 +80,12 @@ app.use("/api/v1/elderCareOrg-categories", elderCareOrgCategory);
 app.use("/api/v1/elderCare-org", elderCareOrg);
 app.use("/api/v1/diagnosticLab-categories", diagnosticLabCategory);
 app.use("/api/v1/diagnostic-lab", diagnosticLab);
+app.use("/api/v1/ambulance-categories", ambulanceCategory);
+app.use("/api/v1/ambulance", ambulance);
+app.use("/api/v1/aya-categories", AyaCategory);
+app.use("/api/v1/aya-service", AyaService);
+app.use("/api/v1/physiotherapist-categories", PhysiotherapistCategory);
+app.use("/api/v1/physiotherapist", Physiotherapist);
 
 // Home route
 app.get("/", (req, res) => {

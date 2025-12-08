@@ -11,7 +11,27 @@ const courseRegistrationSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  description: {
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  resume: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  location: {
     type: String,
     required: true,
   },
@@ -19,10 +39,7 @@ const courseRegistrationSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
+
 });
 
 const CourseRegistration = mongoose.model(

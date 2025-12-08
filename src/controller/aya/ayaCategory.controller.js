@@ -1,11 +1,11 @@
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
-import DiagnosticLabCategory from "../../models/diagnosticLab/diagnosticLabCategory.model.js";
-import DiagnosticLab from "../../models/diagnosticLab/diagnosticLab.model.js";
+import AyaCategory from "../../models/aya/ayaCategory.model.js";
+import AyaService from "../../models/aya/ayaService.model.js";
 
-// Create Diagnostic Lab Category
-export const createDiagnosticLabCategory = asyncHandler(async (req, res) => {
+// Create Aya Category
+export const createAyaCategory = asyncHandler(async (req, res) => {
     try {
         const { name, description, isActive } = req.body;
         // Validation
@@ -15,15 +15,15 @@ export const createDiagnosticLabCategory = asyncHandler(async (req, res) => {
         .json(new ApiResponse(400, null, "Category name is required"));
     }
     // Check if category already exists
-    const existingCategory = await DiagnosticLabCategory.findOne({ name });
+    const existingCategory = await AyaCategory.findOne({ name });
     if (existingCategory) {
       return res
         .status(409)
-        .json(new ApiResponse(409, null, "Diagnostic Lab category already exists"));
+        .json(new ApiResponse(409, null, "Aya category already exists"));
     }
 
      // Create new category
-    const category = new DiagnosticLabCategory({
+    const category = new AyaCategory({
       name,
       description: description || "",
       isActive: isActive || false,
@@ -34,17 +34,17 @@ export const createDiagnosticLabCategory = asyncHandler(async (req, res) => {
     return res
       .status(201)
       .json(
-        new ApiResponse(201, category, "Diagnostic Lab category created successfully")
+        new ApiResponse(201, category, "Aya category created successfully")
       );
     } catch (error) {
         return handleMongoErrors(error, res);
     }
 });
 
-// Get All Diagnostic Lab Categories
-export const getAllDiagnosticLabCategories  = asyncHandler(async (req, res) => {
+// Get All Aya Categories
+export const getAllAyaCategories  = asyncHandler(async (req, res) => {
   try {
-    const categories = await DiagnosticLabCategory.find().sort({ name: 1 });
+    const categories = await AyaCategory.find().sort({ name: 1 });
 
     return res
       .status(200)
@@ -52,7 +52,7 @@ export const getAllDiagnosticLabCategories  = asyncHandler(async (req, res) => {
         new ApiResponse(
           200,
           categories,
-          "Diagnostic Lab categories retrieved successfully"
+          "Aya categories retrieved successfully"
         )
       );
   } catch (error) {
@@ -60,10 +60,10 @@ export const getAllDiagnosticLabCategories  = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Active Diagnostic Lab Categories
-export const getActiveDiagnosticLabCategories = asyncHandler(async (req, res) => {
+// Get Active Aya Categories
+export const getActiveAyaCategories = asyncHandler(async (req, res) => {
   try {
-    const categories = await DiagnosticLabCategory.find({ isActive: true }).sort({
+    const categories = await AyaCategory.find({ isActive: true }).sort({
       name: 1,
     });
 
@@ -73,7 +73,7 @@ export const getActiveDiagnosticLabCategories = asyncHandler(async (req, res) =>
         new ApiResponse(
           200,
           categories,
-          "Active Diagnostic Lab categories retrieved successfully"
+          "Active Aya categories retrieved successfully"
         )
       );
   } catch (error) {
@@ -81,49 +81,49 @@ export const getActiveDiagnosticLabCategories = asyncHandler(async (req, res) =>
   }
 });
 
-// Get Diagnostic Lab Category by ID
-export const getDiagnosticLabCategoryById = asyncHandler(async (req, res) => {
+// Get Aya Category by ID
+export const getAyaCategoryById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    const category = await DiagnosticLabCategory.findById(id);
+    const category = await AyaCategory.findById(id);
     if (!category) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Diagnostic Lab category not found"));
+        .json(new ApiResponse(404, null, "Aya category not found"));
     }
 
     return res
       .status(200)
       .json(
-        new ApiResponse(200, category, "Diagnostic Lab category retrieved successfully")
+        new ApiResponse(200, category, "Aya category retrieved successfully")
       );
   } catch (error) {
     return handleMongoErrors(error, res);
   }
 });
 
-// Update Diagnostic Lab Category
-export const updateDiagnosticLabCategory = asyncHandler(async (req, res) => {
+// Update Aya Category
+export const updateAyaCategory = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const { name, description, isActive } = req.body;
 
-    const category = await DiagnosticLabCategory.findById(id);
+    const category = await AyaCategory.findById(id);
     if (!category) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Diagnostic Lab category not found"));
+        .json(new ApiResponse(404, null, "Aya category not found"));
     }
 
     // Check if name already exists (excluding current category)
     if (name && name !== category.name) {
-      const existingCategory = await DiagnosticLabCategory.findOne({ name });
+      const existingCategory = await AyaCategory.findOne({ name });
       if (existingCategory) {
         return res
           .status(409)
           .json(
-            new ApiResponse(409, null, "Diagnostic Lab category name already exists")
+            new ApiResponse(409, null, "Aya category name already exists")
           );
       }
     }
@@ -138,45 +138,45 @@ export const updateDiagnosticLabCategory = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(
-        new ApiResponse(200, category, "Diagnostic Lab category updated successfully")
+        new ApiResponse(200, category, "Aya category updated successfully")
       );
   } catch (error) {
     return handleMongoErrors(error, res);
   }
 });
 
-// Delete Diagnostic Lab Category
-export const deleteDiagnosticLabCategory = asyncHandler(async (req, res) => {
+// Delete Aya Category
+export const deleteAyaCategory = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
   
-    const diagnosticLabCount = await DiagnosticLab.countDocuments({
+    const AyaCount = await AyaService.countDocuments({
       category: id,
     });
 
-    if (diagnosticLabCount > 0) {
+    if (AyaCount > 0) {
       return res
         .status(400)
         .json(
           new ApiResponse(
             400,
             null,
-            "Cannot delete category. Diagnostic Lab centers are using this category."
+            "Cannot delete category. Aya centers are using this category."
           )
         );
     }
 
-    const category = await DiagnosticLabCategory.findByIdAndDelete(id);
+    const category = await AyaCategory.findByIdAndDelete(id);
     if (!category) {
       return res
         .status(404)
-        .json(new ApiResponse(404, null, "Diagnostic Lab category not found"));
+        .json(new ApiResponse(404, null, "Aya category not found"));
     }
 
     return res
       .status(200)
-      .json(new ApiResponse(200, null, "Diagnostic Lab category deleted successfully"));
+      .json(new ApiResponse(200, null, "Aya category deleted successfully"));
   } catch (error) {
     return handleMongoErrors(error, res);
   }

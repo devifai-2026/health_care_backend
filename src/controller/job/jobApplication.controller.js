@@ -6,16 +6,17 @@ import handleMongoErrors from "../../utils/mongooseError.js";
 
 // Apply for Job
 export const applyForJob = asyncHandler(async (req, res) => {
+ 
   try {
     const {
       jobId,
       firstName,
       lastName,
       resume,
-      coverLetter,
       phone,
       email,
       location,
+      applicant,
     } = req.body;
 
     // Validation
@@ -55,11 +56,10 @@ export const applyForJob = asyncHandler(async (req, res) => {
     // Create new application
     const application = new JobApplication({
       job: jobId,
-      applicant: req.user?._id, // Assuming user is authenticated
+      applicant, // Assuming user is authenticated
       firstName,
       lastName,
       resume,
-      coverLetter: coverLetter || null,
       phone,
       email,
       location,

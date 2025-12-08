@@ -24,10 +24,6 @@ const jobApplicationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    coverLetter: {
-      type: String,
-      default: null,
-    },
     phone: {
       type: String,
       required: true,
@@ -44,6 +40,10 @@ const jobApplicationSchema = new mongoose.Schema(
       type: String,
       enum: ["Pending", "Reviewed", "Rejected", "Shortlisted"],
       default: "Pending",
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
     },
   },
   {

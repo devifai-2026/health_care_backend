@@ -9,15 +9,34 @@ import User from "../../models/user/user.model.js";
 // Create Course Registration (User)
 export const createCourseRegistration = asyncHandler(async (req, res) => {
   try {
-    const { course, description } = req.body;
-    const student = req.user._id; // Assuming user is authenticated
+    const {
+      course,
+      student,
+      firstName,
+      lastName,
+      resume,
+      phone,
+      email,
+      location,
+
+    } = req.body;
 
     // Validation
-    if (!course || !description) {
+    if (
+      !course ||
+      !student ||
+      !firstName ||
+      !lastName ||
+      !resume ||
+      !phone ||
+      !email ||
+      !location 
+
+    ) {
       return res
         .status(400)
         .json(
-          new ApiResponse(400, null, "Course and description are required")
+          new ApiResponse(400, null, "All required fields must be filled")
         );
     }
 
@@ -57,7 +76,12 @@ export const createCourseRegistration = asyncHandler(async (req, res) => {
     const registration = new CourseRegistration({
       course,
       student,
-      description,
+      firstName,
+      lastName,
+      resume,
+      phone,
+      email,
+      location
     });
 
     await registration.save();

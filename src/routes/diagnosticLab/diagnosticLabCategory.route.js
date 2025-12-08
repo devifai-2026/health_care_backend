@@ -5,7 +5,7 @@ import {
   getActiveDiagnosticLabCategories,
   getDiagnosticLabCategoryById,
   updateDiagnosticLabCategory,
-  deleteMedicineShopCategory
+  deleteDiagnosticLabCategory
 } from "../../controller/diagnosticLab/diagnosticCategory.controller.js";
 
 import { authenticateAdmin } from "../../middleware/admin.auth.middleware.js";
@@ -20,6 +20,6 @@ router.get("/:id", getDiagnosticLabCategoryById);
 // Protected routes (Admin only)
 router.post("/", authenticateAdmin, createDiagnosticLabCategory);
 router.put("/:id", authenticateAdmin, updateDiagnosticLabCategory);
-router.delete("/:id", authenticateAdmin, deleteMedicineShopCategory);
+router.delete("/:id", authenticateAdmin, deleteDiagnosticLabCategory);
 
 export default router;
