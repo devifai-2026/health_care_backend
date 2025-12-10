@@ -21,6 +21,11 @@ export const createDoctor = asyncHandler(async (req, res) => {
       availableTime,
       location,
       isActive,
+      amenities,
+      about,
+      doctorCoverImg,
+      doctorImg,
+      pincode,
     } = req.body;
 
     // Validation
@@ -36,7 +41,10 @@ export const createDoctor = asyncHandler(async (req, res) => {
       !email ||
       !availableDays ||
       !availableTime ||
-      !location
+      !location||
+      !about||
+      !doctorCoverImg||
+      !doctorImg
     ) {
       return res
         .status(400)
@@ -76,6 +84,11 @@ export const createDoctor = asyncHandler(async (req, res) => {
       availableTime,
       location,
       isActive: isActive || false,
+      amenities,
+      about,
+      doctorCoverImg,
+      doctorImg,
+      pincode
     });
 
     await doctor.save();
@@ -272,6 +285,32 @@ export const searchDoctors = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(new ApiResponse(200, doctors, "Doctors search results"));
+  } catch (error) {
+    return handleMongoErrors(error, res);
+  }
+});
+
+// Get Doctor by Pincode
+export const getDoctorByPincode = asyncHandler(async (req, res) => {
+  try {
+    const { pincode } = req.params;
+
+    const medicineShops = await Doctor.find({
+      pincode: parseInt(pincode),
+      isActive: true,
+    })
+      .populate("category", "name description")
+      .sort({ name: 1 });
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          medicineShops,
+          "Doctor by pincode retrieved successfully"
+        )
+      );
   } catch (error) {
     return handleMongoErrors(error, res);
   }

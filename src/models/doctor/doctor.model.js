@@ -57,6 +57,30 @@ const doctorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  pincode: {
+    type: Number,
+    default: null,
+  },
+  about:{
+    type: String,
+    required: true,
+  },
+  amenities:[
+    {
+      type: String,
+      required: false,
+    }
+  ],
+  doctorCoverImg: {
+    type: String,  // Cloudinary URL of the main image
+    required: false,
+    default: "",
+  },
+  doctorImg: [
+    {
+      type: String, // Cloudinary URL of the sub image
+    },
+  ],
   isActive: {
     type: Boolean,
     default: false,

@@ -8,6 +8,7 @@ import {
   updateDoctor,
   deleteDoctor,
   searchDoctors,
+  getDoctorByPincode
 } from "../../controller/doctor/doctor.controller.js";
 import { authenticateAdmin } from "../../middleware/admin.auth.middleware.js";
 
@@ -18,6 +19,7 @@ router.get("/", getAllDoctors);
 router.get("/active", getActiveDoctors);
 router.get("/search", searchDoctors);
 router.get("/category/:categoryId", getDoctorsByCategory);
+router.get("/pincode/:pincode", getDoctorByPincode);
 router.get("/:id", getDoctorById);
 
 // Protected routes (Admin only)
