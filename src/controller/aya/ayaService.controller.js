@@ -15,6 +15,8 @@ export const createAyaService = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties,
+      about,
+      amenities,
       isActive,
       ayaCoverImg,
       ayaImg
@@ -28,6 +30,7 @@ export const createAyaService = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
+      !about ||
       !ayaCoverImg,
       !ayaImg
     ) {
@@ -67,6 +70,8 @@ export const createAyaService = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
+      about,
+      amenities: Array.isArray(amenities) ? amenities : [amenities],
       isActive: isActive || false,
       ayaCoverImg,
       ayaImg : Array.isArray(ayaImg) ? ayaImg : [ayaImg],

@@ -15,6 +15,8 @@ export const createDiagnosticLab = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties,
+      about,
+      amenities,
       isActive,
       diagnosticLabCoverImg,
       diagnosticLabImg
@@ -30,6 +32,7 @@ export const createDiagnosticLab = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
+      !about ||
       !diagnosticLabCoverImg,
       !diagnosticLabImg
     ) {
@@ -69,6 +72,8 @@ export const createDiagnosticLab = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
+      about,
+      amenities: Array.isArray(amenities) ? amenities : [amenities],
       isActive: isActive || false,
       diagnosticLabCoverImg,
       diagnosticLabImg : Array.isArray(diagnosticLabImg) ? diagnosticLabImg : [diagnosticLabImg],

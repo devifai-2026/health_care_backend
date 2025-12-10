@@ -15,6 +15,8 @@ export const createMedineShop = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties,
+      about,
+      amenities,
       isActive,
       medicineShopCoverImg,
       medicineShopImg
@@ -28,6 +30,7 @@ export const createMedineShop = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
+      !about ||
       !medicineShopCoverImg,
       !medicineShopImg
     ) {
@@ -67,6 +70,8 @@ export const createMedineShop = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
+      about,
+      amenities: Array.isArray(amenities) ? amenities : [amenities],
       isActive: isActive || false,
       medicineShopCoverImg,
       medicineShopImg : Array.isArray(medicineShopImg) ? medicineShopImg : [medicineShopImg],

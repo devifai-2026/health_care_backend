@@ -15,6 +15,8 @@ export const createElderCareOrg = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties,
+      about,
+      amenities,
       isActive,
       elderCareOrgCoverImg,
       elderCareOrgImg
@@ -27,6 +29,7 @@ export const createElderCareOrg = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
+      !about ||
       !elderCareOrgCoverImg,
       !elderCareOrgImg
     ) {
@@ -66,6 +69,8 @@ export const createElderCareOrg = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
+      about,
+      amenities: Array.isArray(amenities) ? amenities : [amenities],
       isActive: isActive || false,
       elderCareOrgCoverImg,
       elderCareOrgImg : Array.isArray(elderCareOrgImg) ? elderCareOrgImg : [elderCareOrgImg],

@@ -32,6 +32,16 @@ const ambulanceSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  about:{
+    type: String,
+    required: true,
+  },
+  amenities:[
+    {
+      type: String,
+      required: false,
+    }
+  ],
   isActive: {
     type: Boolean,
     default: false,

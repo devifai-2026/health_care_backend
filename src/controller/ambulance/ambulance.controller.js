@@ -15,6 +15,8 @@ export const createAmbulance = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties,
+      about,
+      amenities,
       isActive,
       ambulanceCoverImg,
       ambulanceImg
@@ -30,6 +32,7 @@ export const createAmbulance = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
+      !about ||
       !ambulanceCoverImg,
       !ambulanceImg
     ) {
@@ -69,6 +72,8 @@ export const createAmbulance = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
+      about,
+      amenities: Array.isArray(amenities) ? amenities : [amenities],
       isActive: isActive || false,
       ambulanceCoverImg,
       ambulanceImg : Array.isArray(ambulanceImg) ? ambulanceImg : [ambulanceImg],

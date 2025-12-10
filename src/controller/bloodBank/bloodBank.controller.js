@@ -15,6 +15,8 @@ export const createBloodBank = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties,
+      about,
+      amenities,
       isActive,
       bloodBankCoverImg,
       bloodBankImg
@@ -28,6 +30,7 @@ export const createBloodBank = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
+      !about ||
       !bloodBankCoverImg,
       !bloodBankImg
     ) {
@@ -67,6 +70,8 @@ export const createBloodBank = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
+      about,
+      amenities: Array.isArray(amenities) ? amenities : [amenities],
       isActive: isActive || false,
       bloodBankCoverImg,
       bloodBankImg : Array.isArray(bloodBankImg) ? bloodBankImg : [bloodBankImg],

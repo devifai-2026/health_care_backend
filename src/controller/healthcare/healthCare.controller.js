@@ -17,6 +17,8 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       email,
       specialties,
       isActive,
+      about,
+      amenities,
       HealthcareCoverImg,
       HealthcareImg
     } = req.body;
@@ -31,6 +33,7 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
+      !about ||
       ! HealthcareCoverImg,
       !HealthcareImg
     ) {
@@ -71,6 +74,8 @@ export const createHealthcareCenter = asyncHandler(async (req, res) => {
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
       isActive: isActive || false,
+      about,
+      amenities:Array.isArray(amenities) ? amenities : [amenities],
       HealthcareCoverImg,
       HealthcareImg : Array.isArray(HealthcareImg) ? HealthcareImg : [HealthcareImg],
     });

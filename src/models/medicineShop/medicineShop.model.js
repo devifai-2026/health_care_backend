@@ -36,6 +36,16 @@ const medicineShopSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  about:{
+    type: String,
+    required: true,
+  },
+  amenities:[
+    {
+      type: String,
+      required: false,
+    }
+  ],
   medicineShopCoverImg: {
     type: String,  // Cloudinary URL of the main image
     required: false,

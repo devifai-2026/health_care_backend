@@ -15,6 +15,8 @@ export const createPhysiotheripst = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties,
+      about,
+      amenities,
       isActive,
       physiotherapistCoverImg,
       physiotherapistImg
@@ -28,6 +30,7 @@ export const createPhysiotheripst = asyncHandler(async (req, res) => {
       !contactNumber ||
       !email ||
       !specialties ||
+      !about ||
       !physiotherapistCoverImg,
       !physiotherapistImg
     ) {
@@ -67,6 +70,8 @@ export const createPhysiotheripst = asyncHandler(async (req, res) => {
       contactNumber,
       email,
       specialties: Array.isArray(specialties) ? specialties : [specialties],
+      about,
+      amenities: Array.isArray(amenities) ? amenities : [amenities],
       isActive: isActive || false,
       physiotherapistCoverImg,
       physiotherapistImg : Array.isArray(physiotherapistImg) ? physiotherapistImg : [physiotherapistImg],
