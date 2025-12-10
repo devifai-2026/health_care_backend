@@ -18,7 +18,6 @@ export const createCourseRegistration = asyncHandler(async (req, res) => {
       phone,
       email,
       location,
-
     } = req.body;
 
     // Validation
@@ -30,14 +29,11 @@ export const createCourseRegistration = asyncHandler(async (req, res) => {
       !resume ||
       !phone ||
       !email ||
-      !location 
-
+      !location
     ) {
       return res
         .status(400)
-        .json(
-          new ApiResponse(400, null, "All required fields must be filled")
-        );
+        .json(new ApiResponse(400, null, "All required fields must be filled"));
     }
 
     // Check if course exists
@@ -81,7 +77,7 @@ export const createCourseRegistration = asyncHandler(async (req, res) => {
       resume,
       phone,
       email,
-      location
+      location,
     });
 
     await registration.save();
@@ -98,6 +94,7 @@ export const createCourseRegistration = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
+    console.log(error.message);
     return handleMongoErrors(error, res);
   }
 });
@@ -116,7 +113,14 @@ export const getAllCourseRegistrations = asyncHandler(async (req, res) => {
     }
 
     const registrations = await CourseRegistration.find(filter)
-      .populate("course", "title instructor category")
+      .populate({
+        path: "course",
+        select: "title instructor category duration price images", // Add other fields you need
+        populate: {
+          path: "category",
+          select: "name description isActive", // Populate category details
+        },
+      })
       .populate("student", "name email phone")
       .sort({ createdAt: -1 });
 
@@ -133,6 +137,7 @@ export const getAllCourseRegistrations = asyncHandler(async (req, res) => {
     return handleMongoErrors(error, res);
   }
 });
+
 
 // Get Course Registration by ID
 export const getCourseRegistrationById = asyncHandler(async (req, res) => {

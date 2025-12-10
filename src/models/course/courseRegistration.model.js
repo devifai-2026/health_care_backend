@@ -43,7 +43,7 @@ const courseRegistrationSchema = new mongoose.Schema({
 });
 
 const CourseRegistration = mongoose.model(
-  "courseRegistration",
+  "CourseRegistration",
   courseRegistrationSchema
 );
 

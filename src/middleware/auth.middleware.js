@@ -24,15 +24,16 @@ export const authenticateUser = asyncHandler(async (req, res, next) => {
       throw new ApiResponse(401, null, "User no longer exists");
     }
 
-    // Check if user is active
-    if (!user.isActive) {
-      throw new ApiResponse(403, null, "Account is not active");
-    }
+    // // Check if user is active
+    // if (!user.isActive) {
+    //   throw new ApiResponse(403, null, "Account is not active");
+    // }
 
     // Attach user to request
     req.user = user;
     next();
   } catch (error) {
+    console.log(error.message)
     throw new ApiResponse(401, null, "Invalid or expired token");
   }
 });
