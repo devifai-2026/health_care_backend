@@ -14,7 +14,6 @@ export const createCourseRegistration = asyncHandler(async (req, res) => {
       student,
       firstName,
       lastName,
-      resume,
       phone,
       email,
       location,
@@ -26,7 +25,6 @@ export const createCourseRegistration = asyncHandler(async (req, res) => {
       !student ||
       !firstName ||
       !lastName ||
-      !resume ||
       !phone ||
       !email ||
       !location
@@ -74,7 +72,6 @@ export const createCourseRegistration = asyncHandler(async (req, res) => {
       student,
       firstName,
       lastName,
-      resume,
       phone,
       email,
       location,
