@@ -172,3 +172,42 @@ export const deleteApplication = asyncHandler(async (req, res) => {
     return handleMongoErrors(error, res);
   }
 });
+
+export const updateApplicationStatus = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, null, "Status is required"));
+    }
+
+    const application = await JobApplication.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    )
+      .populate("job", "title category employmentType location")
+      .populate("applicant", "firstName lastName email");
+
+    if (!application) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, null, "Application not found"));
+    }
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          application,
+          "Application status updated successfully"
+        )
+      );
+  } catch (error) {
+    return handleMongoErrors(error, res);
+  }
+});

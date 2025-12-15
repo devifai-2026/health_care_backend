@@ -38,8 +38,8 @@ const jobApplicationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Reviewed", "Rejected", "Shortlisted"],
-      default: "Pending",
+      enum: ["pending", "reviewed", "shortlisted", "rejected"],
+      default: "pending",
     },
     createdAt: {
       type: Date,

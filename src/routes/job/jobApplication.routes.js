@@ -5,6 +5,7 @@ import {
   getUserApplications,
   getApplicationById,
   deleteApplication,
+  updateApplicationStatus 
 } from "../../controller/job/jobApplication.controller.js";
 
 import { authenticateAdmin } from "../../middleware/admin.auth.middleware.js";
@@ -20,5 +21,6 @@ router.get("/job/:jobId", authenticateAdmin, getJobApplications);
 router.get("/my-applications", authenticateAdmin, getUserApplications);
 router.get("/:id", authenticateAdmin, getApplicationById);
 router.delete("/:id", authenticateAdmin, deleteApplication);
+router.patch("/:id/status", authenticateAdmin, updateApplicationStatus);
 
 export default router;
