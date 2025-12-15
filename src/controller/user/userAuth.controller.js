@@ -13,10 +13,10 @@ import User from "../../models/user/user.model.js";
 // Register User with OTP
 export const registerUser = asyncHandler(async (req, res) => {
   try {
-    const { name, email, password, referralId } = req.body;
+    const { name, email,phone, password, accountType, referralId } = req.body;
 
     // Validation
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !phone || !accountType) {
       return res
         .status(400)
         .json(new ApiResponse(400, null, "All fields are required"));
@@ -36,8 +36,11 @@ export const registerUser = asyncHandler(async (req, res) => {
     const user = new User({
       name,
       email,
+      PhoneNumber: phone,
       password,
+      accountType,
       referralId: referralId || null,
+      
     });
 
     // Generate OTP

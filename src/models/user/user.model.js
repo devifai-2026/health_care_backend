@@ -12,9 +12,19 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    PhoneNumber:{
+      type: String,
+      required: true,
+      unique: true,
+    },
     password: {
       type: String,
       required: true,
+    },
+    accountType: {
+      type: String,
+      enum: ["User", "Associate", "Partner"],
+      default: "user",
     },
     referralId: {
       type: String,
