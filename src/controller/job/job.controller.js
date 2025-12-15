@@ -1,5 +1,6 @@
 import Job from "../../models/job/job.model.js";
 import JobCategory from "../../models/job/jobCategory.model.js";
+import JobApplication from "../../models/job/jobApplication.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
@@ -161,14 +162,32 @@ export const deleteJob = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    const job = await Job.findByIdAndDelete(id);
-    if (!job) {
-      return res.status(404).json(new ApiResponse(404, null, "Job not found"));
+    //  Check if any application exists for this job
+    const applicationExists = await JobApplication.exists({ job: id });
+    //  change `job` to your actual field name if different
+
+    if (applicationExists) {
+      return res.status(400).json(
+        new ApiResponse(
+          400,
+          null,
+          "Job cannot be deleted because applications already exist"
+        )
+      );
     }
 
-    return res
-      .status(200)
-      .json(new ApiResponse(200, null, "Job deleted successfully"));
+    // 2️⃣ Delete job only if no applications found
+    const job = await Job.findByIdAndDelete(id);
+
+    if (!job) {
+      return res.status(404).json(
+        new ApiResponse(404, null, "Job not found")
+      );
+    }
+
+    return res.status(200).json(
+      new ApiResponse(200, null, "Job deleted successfully")
+    );
   } catch (error) {
     return handleMongoErrors(error, res);
   }

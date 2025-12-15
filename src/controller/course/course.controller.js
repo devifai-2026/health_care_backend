@@ -1,5 +1,6 @@
 import Course from "../../models/course/course.model.js";
 import CourseCategory from "../../models/course/courseCategory.model.js";
+import CourseRegistration from "../../models/course/courseRegistration.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
@@ -197,6 +198,21 @@ export const updateCourse = asyncHandler(async (req, res) => {
 export const deleteCourse = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
+    // Check if any application exists for this job
+    const courseApplicationExists = await CourseRegistration.exists({ course: id });
+    // change `job` to your actual field name if different
+
+    if (courseApplicationExists) {
+      return res.status(400).json(
+        new ApiResponse(
+          400,
+          null,
+          "Course cannot be deleted because applications already exist"
+        )
+      );
+    }
+
+    // 2️⃣ Delete job only if no applications found
 
     const course = await Course.findById(id);
     if (!course) {
