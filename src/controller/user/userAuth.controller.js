@@ -13,7 +13,7 @@ import User from "../../models/user/user.model.js";
 // Register User with OTP
 export const registerUser = asyncHandler(async (req, res) => {
   try {
-    const { name, email,phone, password, accountType, referralId } = req.body;
+    const { name, email, phone, password, accountType, referralId } = req.body;
 
     // Validation
     if (!name || !email || !password || !phone || !accountType) {
@@ -22,9 +22,27 @@ export const registerUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(400, null, "All fields are required"));
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    // Check if phone number already exists for a VERIFIED user
+    const existingVerifiedUserWithPhone = await User.findOne({ 
+      PhoneNumber: phone, 
+      isVerified: true 
+    });
+    
+    if (existingVerifiedUserWithPhone) {
+      return res
+        .status(409)
+        .json(
+          new ApiResponse(409, null, "Phone number already in use by a verified user")
+        );
+    }
+
+    // Check if user already exists and is verified (by email)
+    const existingVerifiedUserByEmail = await User.findOne({ 
+      email, 
+      isVerified: true 
+    });
+    
+    if (existingVerifiedUserByEmail) {
       return res
         .status(409)
         .json(
@@ -32,15 +50,74 @@ export const registerUser = asyncHandler(async (req, res) => {
         );
     }
 
-    // Create new user
-    const user = new User({
+    // Check if user exists but is not verified
+    let user = await User.findOne({ email, isVerified: false });
+
+    if (user) {
+      // Check if this phone number is being used by another unverified user
+      // (excluding the current unverified user we found by email)
+      const otherUnverifiedUserWithSamePhone = await User.findOne({ 
+        PhoneNumber: phone, 
+        isVerified: false,
+        email: { $ne: email } // Different email but same phone
+      });
+      
+      if (otherUnverifiedUserWithSamePhone) {
+        return res
+          .status(409)
+          .json(
+            new ApiResponse(409, null, "Phone number already in use by another unverified user")
+          );
+      }
+
+      // Update existing unverified user with new details
+      user.name = name;
+      user.PhoneNumber = phone;
+      user.password = password;
+      user.accountType = accountType;
+      user.referralId = referralId || null;
+      
+      // Regenerate OTP for the existing user
+      const otp = user.generateOTP();
+      await user.save();
+
+      // Send OTP email
+      await sendOtpEmail(email, otp);
+
+      return res.status(200).json(
+        new ApiResponse(
+          200,
+          {
+            userId: user._id,
+            email: user.email,
+          },
+          "OTP resent successfully to your email."
+        )
+      );
+    }
+
+    // For new user, check if phone is used by any unverified user
+    const unverifiedUserWithSamePhone = await User.findOne({ 
+      PhoneNumber: phone, 
+      isVerified: false 
+    });
+    
+    if (unverifiedUserWithSamePhone) {
+      return res
+        .status(409)
+        .json(
+          new ApiResponse(409, null, "Phone number already in use by another unverified user")
+        );
+    }
+
+    // Create new user if doesn't exist
+    user = new User({
       name,
       email,
       PhoneNumber: phone,
       password,
       accountType,
       referralId: referralId || null,
-      
     });
 
     // Generate OTP
@@ -61,7 +138,7 @@ export const registerUser = asyncHandler(async (req, res) => {
       )
     );
   } catch (error) {
-    console.log(error,"error")
+    console.log(error, "error");
     return handleMongoErrors(error, res);
   }
 });
