@@ -2,6 +2,7 @@ import DoctorCategory from "../../models/doctor/doctorCategory.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
+import Doctor from "../../models/doctor/doctor.model.js";
 
 // Create Doctor Category
 export const createDoctorCategory = asyncHandler(async (req, res) => {
@@ -148,6 +149,22 @@ export const updateDoctorCategory = asyncHandler(async (req, res) => {
 export const deleteDoctorCategory = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
+
+    const doctorCount = await Doctor.countDocuments({
+      category: id,
+    });
+
+    if (doctorCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            "Cannot delete category. Doctors are using this category."
+          )
+        );
+    }
 
     const category = await DoctorCategory.findByIdAndDelete(id);
     if (!category) {
