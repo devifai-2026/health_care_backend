@@ -130,6 +130,22 @@ export const updateHealthCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const healthcareCount = await HealthcareCenter.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && healthcareCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${healthcareCount} Healthcare center(s) are using this category.`
+          )
+        );
+    }
+
     // Update fields
     if (name) category.name = name;
     if (description !== undefined) category.description = description;
@@ -152,7 +168,7 @@ export const deleteHealthCategory = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-  
+
     const healthcareCount = await HealthcareCenter.countDocuments({
       category: id,
     });

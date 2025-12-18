@@ -2,6 +2,7 @@ import CourseCategory from "../../models/course/courseCategory.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
+import Course from "../../models/course/course.model.js";
 
 // Create Course Category (Admin only)
 export const createCourseCategory = asyncHandler(async (req, res) => {
@@ -132,6 +133,22 @@ export const updateCourseCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const courseCount = await Course.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && courseCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${courseCount} courses  are using this category.`
+          )
+        );
+    }
+
     // Update fields
     if (name !== undefined) category.name = name;
     if (description !== undefined) category.description = description;
@@ -151,6 +168,21 @@ export const updateCourseCategory = asyncHandler(async (req, res) => {
 export const deleteCourseCategory = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
+    const courseCount = await Course.countDocuments({
+      category: id,
+    });
+
+    if (courseCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            "Cannot delete category. Courses are using this category."
+          )
+        );
+    }
 
     const category = await CourseCategory.findById(id);
     if (!category) {
@@ -181,6 +213,22 @@ export const toggleCategoryStatus = asyncHandler(async (req, res) => {
         .json(new ApiResponse(404, null, "Category not found"));
     }
 
+    const courseCount = await Course.countDocuments({
+      category: id,
+    });
+
+    if (courseCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${courseCount} courses  are using this category.`
+          )
+        );
+    }
+
     category.isActive = !category.isActive;
     await category.save();
 
@@ -191,7 +239,7 @@ export const toggleCategoryStatus = asyncHandler(async (req, res) => {
           200,
           category,
           `Category ${
-            category.isActive ? "activated" : "deactivated"
+          category.isActive ? "activated" : "deactivated"
           } successfully`
         )
       );

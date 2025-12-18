@@ -158,6 +158,25 @@ export const updateCourse = asyncHandler(async (req, res) => {
       }
     }
 
+    // Check if trying to set isActive to false when course registrations exist
+    if (isActive === false) {
+      const courseRegistrationCount = await CourseRegistration.countDocuments({
+        course: id,
+      });
+
+      if (courseRegistrationCount > 0) {
+        return res
+          .status(400)
+          .json(
+            new ApiResponse(
+              400,
+              null,
+              `Cannot deactivate course. ${courseRegistrationCount} student(s) are registered for this course.`
+            )
+          );
+      }
+    }
+
     // Check if new title already exists (excluding current course)
     if (title && title !== course.title) {
       const existingCourse = await Course.findOne({
@@ -242,6 +261,24 @@ export const toggleCourseStatus = asyncHandler(async (req, res) => {
         .status(404)
         .json(new ApiResponse(404, null, "Course not found"));
     }
+    
+
+    const courseRegistrationCount = await CourseRegistration.countDocuments({
+      course: id,
+    });
+
+    if (courseRegistrationCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate course. ${courseRegistrationCount} student(s) are registered for this course.`
+          )
+        );
+    }
+
 
     course.isActive = !course.isActive;
     await course.save();

@@ -128,6 +128,22 @@ export const updateDoctorCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const doctorCount = await Doctor.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && doctorCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${doctorCount} doctor(s) are using this category.`
+          )
+        );
+    }
+
     // Update fields
     if (name) category.name = name;
     if (description !== undefined) category.description = description;

@@ -128,6 +128,22 @@ export const updatePhysiotherapistCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const PhysiotherapistCount = await Physiotherapist.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && PhysiotherapistCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${PhysiotherapistCount} Physiotherapist center(s) are using this category.`
+          )
+        );
+    }
+
     // Update fields
     if (name) category.name = name;
     if (description !== undefined) category.description = description;

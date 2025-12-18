@@ -128,6 +128,22 @@ export const updateDiagnosticLabCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const diagnosticLabCount = await DiagnosticLab.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && diagnosticLabCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${diagnosticLabCount} Diagnostic Lab center(s) are using this category.`
+          )
+        );
+    }
+
     // Update fields
     if (name) category.name = name;
     if (description !== undefined) category.description = description;

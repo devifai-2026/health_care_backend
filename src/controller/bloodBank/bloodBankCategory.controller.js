@@ -128,6 +128,22 @@ export const updateBloodBankCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const bloodBankCount = await BloodBank.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && bloodBankCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${bloodBankCount} Blood Bank center(s) are using this category.`
+          )
+        );
+    }
+
     // Update fields
     if (name) category.name = name;
     if (description !== undefined) category.description = description;

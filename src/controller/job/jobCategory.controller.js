@@ -2,6 +2,7 @@ import JobCategory from "../../models/job/jobCategory.model.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import handleMongoErrors from "../../utils/mongooseError.js";
+import Job from "../../models/job/job.model.js";
 
 // Create Job Category
 export const createJobCategory = asyncHandler(async (req, res) => {
@@ -127,6 +128,22 @@ export const updateJobCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const jobCount = await Job.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && jobCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${jobCount} jobs  are using this category.`
+          )
+        );
+    }
+
     // Update fields
     if (name) category.name = name;
     if (description !== undefined) category.description = description;
@@ -148,6 +165,21 @@ export const updateJobCategory = asyncHandler(async (req, res) => {
 export const deleteJobCategory = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
+    const jobCount = await Job.countDocuments({
+      category: id,
+    });
+
+    if (jobCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            "Cannot delete category. Jobs are using this category."
+          )
+        );
+    }
 
     const category = await JobCategory.findByIdAndDelete(id);
     if (!category) {

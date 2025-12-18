@@ -128,6 +128,21 @@ export const updateElderCareOrgCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const elderCareOrgCount = await ElderCareOrg.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && elderCareOrgCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${elderCareOrgCount} Elder Care Org center(s) are using this category.`
+          )
+        );
+    }
     // Update fields
     if (name) category.name = name;
     if (description !== undefined) category.description = description;

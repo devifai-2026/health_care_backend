@@ -128,6 +128,22 @@ export const updateAyaCategory = asyncHandler(async (req, res) => {
       }
     }
 
+    const AyaCount = await AyaService.countDocuments({
+      category: id,
+    });
+
+    if (isActive === false && AyaCount > 0) {
+      return res
+        .status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            `Cannot deactivate category. ${AyaCount} Aya service(s) are using this category.`
+          )
+        );
+    }
+
     // Update fields
     if (name) category.name = name;
     if (description !== undefined) category.description = description;

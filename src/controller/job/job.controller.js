@@ -139,6 +139,25 @@ export const updateJob = asyncHandler(async (req, res) => {
       }
     }
 
+    // Check if trying to set isActive to false when job applications exist
+    if (updateData.isActive === false) {
+      const jobApplicationCount = await JobApplication.countDocuments({
+        job: id,
+      });
+
+      if (jobApplicationCount > 0) {
+        return res
+          .status(400)
+          .json(
+            new ApiResponse(
+              400,
+              null,
+              `Cannot deactivate job. ${jobApplicationCount} job application(s) are associated with this job.`
+            )
+          );
+      }
+    }
+
     // Update job
     Object.keys(updateData).forEach((key) => {
       if (updateData[key] !== undefined) {
@@ -152,7 +171,7 @@ export const updateJob = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(new ApiResponse(200, job, "Job updated successfully"));
-  } catch (error) {
+  } catch (error) {   
     return handleMongoErrors(error, res);
   }
 });
