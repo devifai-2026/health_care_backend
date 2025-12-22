@@ -4,15 +4,15 @@ import ApiResponse from "../utils/ApiResponse.js";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: "service.carelinnk@gmail.com",
+    pass: "lparzmbxwydnoari",
   },
 });
 
 const sendOtpEmail = async (email, otp) => {
   try {
     await transporter.sendMail({
-      from: `"Care-Linnk" <${process.env.EMAIL_USER}>`,
+      from: `"Care-Linnk" <service.carelinnk@gmail.com>`,
       to: email,
       subject: "Your Care-Linnk Verification Code",
       html: `
@@ -65,7 +65,7 @@ const sendVerificationEmail = async (email, token) => {
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
 
     await transporter.sendMail({
-      from: `"Your App" <${process.env.EMAIL_USER}>`,
+      from: `"Your App" <service.carelinnk@gmail.com>`,
       to: email,
       subject: "Verify Your Email",
       html: `
