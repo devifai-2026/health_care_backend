@@ -57,6 +57,8 @@ import AyaCategory from "./routes/aya/ayaCategory.route.js";
 import AyaService from "./routes/aya/ayaService.route.js";
 import PhysiotherapistCategory from "./routes/physiotherapist/physiotherapistCategory.route.js";
 import Physiotherapist from "./routes/physiotherapist/physiotherapist.route.js";
+import dietitianCategory from "./routes/dietitian/dietianCategory.route.js";
+import dietitian from "./routes/dietitian/dietitian.route.js";
 
 app.use("/api/v1/admin", adminApi);
 app.use("/api/v1/user", userApi);
@@ -86,6 +88,8 @@ app.use("/api/v1/aya-categories", AyaCategory);
 app.use("/api/v1/aya-service", AyaService);
 app.use("/api/v1/physiotherapist-categories", PhysiotherapistCategory);
 app.use("/api/v1/physiotherapist", Physiotherapist);
+app.use("/api/v1/dietitian-categories", dietitianCategory);
+app.use("/api/v1/dietitian", dietitian);
 
 // Home route
 app.get("/", (req, res) => {
